@@ -2,7 +2,7 @@ import xgboost as xgb
 import numpy as np
 
 feature = 2
-RETRAIN = True
+RETRAIN = False
 
 submissions = []
 for feature in range(3):
@@ -31,8 +31,8 @@ for feature in range(3):
         bst = xgb.Booster(param)
         bst.load_model(f'./.cache/train{feature}.model')
 
-    print("Predicting test data:")
-    x = np.load('./data/X_test.npy', mmap_mode='r')
+    print(f"Predicting feature: {feature}")
+    x = np.load('./data/X_train.npy', mmap_mode='r')
     #y = np.load('./data/Y_train.npy', mmap_mode='r')[:,feature]
     test = xgb.DMatrix(x)
     ypred = bst.predict(test)
