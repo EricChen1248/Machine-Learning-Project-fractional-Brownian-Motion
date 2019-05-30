@@ -7,10 +7,10 @@ RETRAIN = True
 TEST = False
 LOAD = True
 parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 7, 'verbose' : 3}
-N = [200,150,100]
+N = [100,150,200]
 
 results = []
-for _ in range(len(N)):
+for i in range(len(N)):
     submissions = []
     for feature in range(3):
         rfRegressor = RandomForestRegressor(**parms)
@@ -18,7 +18,7 @@ for _ in range(len(N)):
         if LOAD:
             rfRegressor = load(f'./.cache/randomForest{feature}.joblib')
             rfRegressor.set_params(**parms)
-            rfRegressor.set_params(warm_start = True, n_estimators = N.pop())
+            rfRegressor.set_params(warm_start = True, n_estimators = N[i])
 
         x = np.load('./data/X_train.npy', mmap_mode='r')
         y = np.load('./data/Y_train.npy', mmap_mode='r')
