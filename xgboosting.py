@@ -1,8 +1,9 @@
 import xgboost as xgb
 import numpy as np
 
-feature = 2
-RETRAIN = False
+# feature = 2
+RETRAIN = True
+TEST = False
 
 submissions = []
 for feature in range(3):
@@ -12,31 +13,37 @@ for feature in range(3):
     x = np.load('./data/X_train.npy', mmap_mode='r')
     y = np.load('./data/Y_train.npy', mmap_mode='r')
     y = y[:,feature]
-    param = {'booster':'gblinear', 'lambda' : 1, 'alpha': 0, 'subsample': 0.5, 'verbosity' : 2, 'predictor' : 'cpu_predictor', 'max_depth': 20}
+    param = {'booster':'gblinear', 'lambda' : 1, 'alpha': 0, 'subsample': 1, 'predictor' : 'cpu_predictor', 'max_depth': 20}
 
     if RETRAIN:
-        print('Loading Data')
-        dTrain = xgb.DMatrix(x, label = y)
+        print(f'Training feature {feature}')
+        size = x.shape[0]
+        batchSize = 10000
 
-        x = None
-        y = None
-        print('Training xgboost')
         bst = None
-        bst = xgb.train(param, dTrain, 5)
-        bst.save_model(f'./.cache/train{feature}.model')
+        iters = size // batchSize + 1
+        for i in range(iters):
+            print(f'Iteration {i + 1} of {iters}:')
+            dTrain = xgb.DMatrix(x[i*batchSize: (i+1)*batchSize], label = y[i*batchSize:(i+1)*batchSize])
+            print('Training xgboost')
+            bst = xgb.train(param, dTrain, xgb_model=bst)
+            dTrain = None
 
-        dTrain = None
+        bst.save_model(f'./.cache/xgboost{feature}.model')
 
     else:
         bst = xgb.Booster(param)
-        bst.load_model(f'./.cache/train{feature}.model')
+        bst.load_model(f'./.cache/xgboost{feature}.model')
 
     print(f"Predicting feature: {feature}")
-    x = np.load('./data/X_train.npy', mmap_mode='r')
-    #y = np.load('./data/Y_train.npy', mmap_mode='r')[:,feature]
+    if TEST :
+        x = np.load('./data/X_test.npy', mmap_mode='r')
+    else:
+        x = np.load('./data/X_train.npy', mmap_mode='r')
     test = xgb.DMatrix(x)
     ypred = bst.predict(test)
-    #ypred = np.array(list(map(lambda x : x + (x - 0.5) / 4, ypred)))
+    test = None
+
     '''
     import matplotlib.pyplot as plt
     testy = y[:predictionSize]

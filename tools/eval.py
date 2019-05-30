@@ -1,20 +1,28 @@
 import numpy as np
 
-y = np.load('./data/Y_train.npy')
-p = np.loadtxt('./data/submission.csv', delimiter=',')
 
-# Feature 1
-w = [300, 1, 200]
-err = np.absolute(y - p) * w
-fet = np.sum(err, axis=0) / y.shape[0]
-res = np.sum(err) / y.shape[0]
+def CalcError():
+    ret = ""
+    y = np.load('./data/Y_train.npy')
+    p = np.loadtxt('./data/submission.csv', delimiter=',')
 
-print("Track 1:",fet, res)
+    # Feature 1
+    w = [300, 1, 200]
+    err = np.absolute(y - p) * w
+    fet = np.sum(err, axis=0) / y.shape[0]
+    res = np.sum(err) / y.shape[0]
+
+    ret += f"Track 1: {fet} {res}\n"
 
 
-err = np.absolute(y - p) / y
-fet = np.sum(err, axis=0) / y.shape[0]
-res = np.sum(err) / y.shape[0]
+    err = np.absolute(y - p) / y
+    fet = np.sum(err, axis=0) / y.shape[0]
+    res = np.sum(err) / y.shape[0]
 
-print("Track 2:",fet, res)
+    ret += f"Track 2: {fet} {res}\n"
 
+    return ret
+
+
+if __name__ == "__main__":
+    print(CalcError())
