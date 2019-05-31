@@ -2,7 +2,7 @@
 
 ## Requirements
 ````
-    python3.6+
+    python3.6+ 64bit
     pip install -r requirements.txt
 ````
 

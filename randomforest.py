@@ -3,11 +3,11 @@ from sklearn.ensemble import RandomForestRegressor
 from joblib import dump, load
 
 
-RETRAIN = False
+RETRAIN = True
 TEST = True
 LOAD = True
 parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 10, 'verbose' : 3}
-N = [250,300,350,400,450,500]
+N = [350]
 
 results = []
 for i in range(len(N)):
@@ -16,11 +16,14 @@ for i in range(len(N)):
         rfRegressor = RandomForestRegressor(**parms)
 
         if LOAD:
-            rfRegressor = load(f'./.cache/randomForest{feature}.joblib')
-            rfRegressor.set_params(**parms)
-            rfRegressor.set_params(warm_start = True, n_estimators = N[i])
+            try:
+                rfRegressor = load(f'./.cache/randomForest{feature}.joblib')
+                rfRegressor.set_params(**parms)
+                rfRegressor.set_params(warm_start = True, n_estimators = N[i])
+            except FileNotFoundError:
+                pass
 
-        x = np.load('./data/X_train.npy', mmap_mode='r')
+        x = np.load('./data/train_avg.npy', mmap_mode='r')
         y = np.load('./data/Y_train.npy', mmap_mode='r')
         y = y[:,feature]
 
@@ -31,7 +34,7 @@ for i in range(len(N)):
             rfRegressor = load(f'./.cache/randomForest{feature}.joblib')
 
         if TEST:
-            x = np.load('./data/X_test.npy', mmap_mode='r')
+            x = np.load('./data/test_avg.npy', mmap_mode='r')
         submissions.append(rfRegressor.predict(x))
 
         '''
