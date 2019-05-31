@@ -3,11 +3,11 @@ from sklearn.ensemble import RandomForestRegressor
 from joblib import dump, load
 
 
-RETRAIN = True
-TEST = False
+RETRAIN = False
+TEST = True
 LOAD = True
-parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 7, 'verbose' : 3}
-N = [100,150,200]
+parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 10, 'verbose' : 3}
+N = [250,300,350,400,450,500]
 
 results = []
 for i in range(len(N)):
