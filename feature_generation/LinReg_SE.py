@@ -29,7 +29,7 @@ X_new = []
 for i in range(N):
     if VERBOSE:
         dots = "."*(int(i/100)%3+1) + " "*(3-(int(i/100)%3+1))
-        print("processing %i/%i data" % (i, N), dots, end="\r")
+        print("processing %i/%i data" % (i+1, N), dots, end="\r")
 
     t = np.array(range(int(dim/2)))
     x_i = X[i, 0:int(dim/2)]
@@ -47,8 +47,10 @@ for i in range(N):
     X_new.append(np.r_[x_i, X[i, int(dim/2):]])
 
 
+if VERBOSE:
+    print("generating new X...       ")
 X_new = np.array(X_new)
-X_new_avg = np.c_[average(X_new), X_new[:, 5000:]]
+X_new_avg = np.c_[average(X_new[:, :5000]), X_new[:, 5000:]]
 
 if VERBOSE:
     print("New shape of X:", X_new.shape)
