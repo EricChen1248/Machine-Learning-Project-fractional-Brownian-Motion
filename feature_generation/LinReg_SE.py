@@ -2,16 +2,20 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import sys
-#import tenths
+
 VERBOSE = True
 DATADIR = '../../data'
 
 
 def average(data):
+    N, dim = data.shape
+    interval = 10
     data = data.T
-    new = np.zeros((1000, data.shape[1]))
-    for i in range(1_000):
-        new[i] =  np.average(data[i * 10: i * 10 + 10])
+    
+    new = np.zeros((int(dim/interval), N))
+    for dim_i in range(int(dim/interval)):
+        new[dim_i] =  np.average(data[dim_i * interval: dim_i * interval + interval])
+    
     new = new.T
     return new
 
@@ -45,6 +49,7 @@ for i in range(N):
 
 X_new = np.array(X_new)
 X_new_avg = np.c_[average(X_new), X_new[:, 5000:]]
+
 if VERBOSE:
     print("New shape of X:", X_new.shape)
     print("New shape of X_avg:", X_new_avg.shape)
