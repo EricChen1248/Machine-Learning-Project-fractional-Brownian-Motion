@@ -85,3 +85,21 @@ Track 2: [2.06342408 0.20153166 0.01642167] 2.2813774082164975
 
 Track 1: [23.19373911 16.4628059   9.20893285] 48.86547785587417
 Track 2: [0.47651444 0.12814425 0.05658498] 0.6612436671219459
+
+# xgboost with important-based filtered data + RF-predicted alpha + auto tree_method
+
+Track 1: [22.835021   16.7832299   3.87269357] 43.490944474041704
+Track 2: [0.44804289 0.13241683 0.02394758] 0.6044072931831186
+
+# xgboost with important-based filtered data + RF-predicted alpha + auto tree_method + reg:tweedie
+
+Track 1: [23.70913993 17.00519485  0.98393428] 41.69826906557891
+Track 2: [0.25235011 0.12481185 0.0067575 ] 0.3839194673352657
+
+# xgboost with important-based filtered data + RF-predicted alpha + auto tree_method + reg:tweedie + num_boost_round=50
+
+Track 1: [22.27215909 16.8850935   1.68882605] 40.846078633410684
+Track 2: [0.2023435  0.12049668 0.01071442] 0.33355459538775933
+
+**It's an overfitted result :(**
+
