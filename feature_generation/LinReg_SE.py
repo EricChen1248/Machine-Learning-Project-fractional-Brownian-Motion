@@ -2,16 +2,20 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 import sys
-#import tenths
+
 VERBOSE = True
 DATADIR = '../../data'
 
 
 def average(data):
+    N, dim = data.shape
+    interval = 10
     data = data.T
-    new = np.zeros((1000, data.shape[1]))
-    for i in range(1_000):
-        new[i] =  np.average(data[i * 10: i * 10 + 10])
+    
+    new = np.zeros((int(dim/interval), N))
+    for dim_i in range(int(dim/interval)):
+        new[dim_i] =  np.average(data[dim_i * interval: dim_i * interval + interval])
+    
     new = new.T
     return new
 
@@ -25,7 +29,7 @@ X_new = []
 for i in range(N):
     if VERBOSE:
         dots = "."*(int(i/100)%3+1) + " "*(3-(int(i/100)%3+1))
-        print("processing %i/%i data" % (i, N), dots, end="\r")
+        print("processing %i/%i data" % (i+1, N), dots, end="\r")
 
     t = np.array(range(int(dim/2)))
     x_i = X[i, 0:int(dim/2)]
@@ -43,8 +47,11 @@ for i in range(N):
     X_new.append(np.r_[x_i, X[i, int(dim/2):]])
 
 
+if VERBOSE:
+    print("generating new X...       ")
 X_new = np.array(X_new)
-X_new_avg = np.c_[average(X_new), X_new[:, 5000:]]
+X_new_avg = np.c_[average(X_new[:, :5000]), X_new[:, 5000:]]
+
 if VERBOSE:
     print("New shape of X:", X_new.shape)
     print("New shape of X_avg:", X_new_avg.shape)
