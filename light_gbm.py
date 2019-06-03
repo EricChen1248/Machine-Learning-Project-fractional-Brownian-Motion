@@ -2,7 +2,9 @@ import lightgbm as lgb
 import numpy as np
 from joblib import dump, load
 
-RETRAIN = False
+SKIP = [False, False, False]
+TRAIN = True
+OBJECTIVE = 'mae'
 
 x = np.load('./data/X_train.npy')
 alpha = np.load('./data/train_alpha.npy', mmap_mode='r+')
@@ -19,27 +21,38 @@ for feature in range(3):
 
     params = {}
     params['learning_rate'] = 0.01
-    params['boosting_type'] = 'gbdt'
-    params['objective'] = 'mae'
-    params['num_leaves'] = 100
+    params['boosting_type'] = 'gbrt'
+    params['objective'] = OBJECTIVE
+    params['num_leaves'] = 120
     params['min_data'] = 50
     params['max_depth'] = 20
-    params['num_threads'] = 8
+    params['num_threads'] = 28
     params['verbosity'] = 2
+    params['two_round'] = True
+    '''
+    params['device'] = 'gpu'
+    params['gpu_platform_id'] = 0
+    params['gpu_device_id'] = 0
+    '''
     # params['max_bin'] = 
 
 
     print(f'Training feature {feature}')
-    if RETRAIN:
-        clf = load(f'./.cache/light{feature}.joblib')
-    else:
+    if TRAIN:
         clf = None
-    clf = lgb.train(params, d_train, 1000)
+    else:
+        try:
+            clf = load(f'./.cache/light{feature}{OBJECTIVE}.joblib')
+        except:
+            clf = None
+
+    if not SKIP[feature]:
+        clf = lgb.train(params, d_train, 2500)
 
     ypred = clf.predict(x)
     submissions.append(ypred)
     
-    dump(clf, f'./.cache/light{feature}.joblib')
+    dump(clf, f'./.cache/light{feature}{OBJECTIVE}.joblib')
 
     tpred = clf.predict(test)
     tsubmissions.append(tpred)
