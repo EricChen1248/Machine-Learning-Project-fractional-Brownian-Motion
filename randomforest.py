@@ -4,10 +4,10 @@ from joblib import dump, load
 
 
 RETRAIN = True
-TEST = True
+TEST = False 
 LOAD = True
-parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 10, 'verbose' : 3}
-N = [350]
+parms = {'bootstrap': True, 'n_jobs': -1, 'n_estimators': 50, 'max_depth': 9, 'verbose' : 3}
+N = [1200,1250,1300,1350,1400]
 
 results = []
 for i in range(len(N)):
@@ -23,7 +23,7 @@ for i in range(len(N)):
             except FileNotFoundError:
                 pass
 
-        x = np.load('./data/train_avg.npy', mmap_mode='r')
+        x = np.load('./data/X_train.npy', mmap_mode='r')
         y = np.load('./data/Y_train.npy', mmap_mode='r')
         y = y[:,feature]
 
