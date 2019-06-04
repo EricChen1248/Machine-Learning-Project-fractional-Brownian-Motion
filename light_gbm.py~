@@ -53,7 +53,7 @@ for feature in range(3):
             clf = None
 
     if not SKIP[feature]:
-        clf = lgb.train(params, d_train, 1000)
+        clf = lgb.train(params, d_train, 500)
 
     ypred = clf.predict(x)
     submissions.append(ypred)

@@ -22,7 +22,7 @@ def average(data):
 
 # load data
 # X = np.load(f"{DATADIR}/X_train.npy", mmap_mode='r')
-X = np.load(f"{DATADIR}/X_test.npy", mmap_mode='r')
+ X = np.load(f"{DATADIR}/X_test.npy", mmap_mode='r')
 N, dim = X.shape
 
 # regenerate
