@@ -45,7 +45,7 @@ for i in range(N):
     
     y_pred = model.predict(t)
     x_i = x_i - y_pred
-    # x_i = x_i * x_i
+    x_i = x_i * x_i
     x_i.shape = (x_i.shape[0], )
 
     #  X_new.append(np.r_[x_i, X[i, int(dim/2):]])
