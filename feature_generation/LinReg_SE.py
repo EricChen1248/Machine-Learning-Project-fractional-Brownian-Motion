@@ -5,6 +5,7 @@ import sys
 
 VERBOSE = True
 DATADIR = './data'
+GEN_TRAIN = True
 
 
 def average(data):
@@ -21,8 +22,10 @@ def average(data):
 
 
 # load data
-# X = np.load(f"{DATADIR}/X_train.npy", mmap_mode='r')
-X = np.load(f"{DATADIR}/X_test.npy", mmap_mode='r')
+if GEN_TRAIN:
+    X = np.load(f"{DATADIR}/X_train.npy", mmap_mode='r')
+else:
+    X = np.load(f"{DATADIR}/X_test.npy", mmap_mode='r')
 N, dim = X.shape
 
 # regenerate
@@ -58,13 +61,12 @@ if VERBOSE:
     print("New shape of X:", X_new.shape)
     print("New shape of X_avg:", X_new_avg.shape)
     print("saving to npy file...")
-
-# np.save(f'{DATADIR}/X_LinRig_SE_train.npy', X_new)
-# np.save(f'{DATADIR}/X_LinRig_SE_avg_train.npy', X_new_avg)
-
-
-np.save(f'{DATADIR}/X_LinRig_SE_test.npy', X_new)
-np.save(f'{DATADIR}/X_LinRig_SE_avg_test.npy', X_new_avg)
+if GEN_TRAIN:
+    np.save(f'{DATADIR}/X_LinRig_SE_train.npy', X_new)
+    np.save(f'{DATADIR}/X_LinRig_SE_avg_train.npy', X_new_avg)
+else:
+    np.save(f'{DATADIR}/X_LinRig_SE_test.npy', X_new)
+    np.save(f'{DATADIR}/X_LinRig_SE_avg_test.npy', X_new_avg)
 
 if VERBOSE:
     print("done.")
