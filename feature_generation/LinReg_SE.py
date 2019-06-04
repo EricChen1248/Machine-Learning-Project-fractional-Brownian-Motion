@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import sys
 
 VERBOSE = True
-DATADIR = '../../data'
+DATADIR = './data'
 
 
 def average(data):
@@ -22,6 +22,7 @@ def average(data):
 
 # load data
 X = np.load(f"{DATADIR}/X_train.npy", mmap_mode='r')
+#  X = np.load(f"{DATADIR}/X_test.npy", mmap_mode='r')
 N, dim = X.shape
 
 # regenerate
@@ -44,7 +45,8 @@ for i in range(N):
     x_i = x_i * x_i
     x_i.shape = (x_i.shape[0], )
 
-    X_new.append(np.r_[x_i, X[i, int(dim/2):]])
+    #  X_new.append(np.r_[x_i, X[i, int(dim/2):]])
+    X_new.append(x_i)
 
 
 if VERBOSE:
@@ -57,8 +59,12 @@ if VERBOSE:
     print("New shape of X_avg:", X_new_avg.shape)
     print("saving to npy file...")
 
-np.save(f'{DATADIR}/X_LinRig_SE.npy', X_new)
-np.save(f'{DATADIR}/X_LinRig_SE_avg.npy', X_new_avg)
+np.save(f'{DATADIR}/X_LinRig_SE_train.npy', X_new)
+np.save(f'{DATADIR}/X_LinRig_SE_avg_train.npy', X_new_avg)
+
+
+#  np.save(f'{DATADIR}/X_LinRig_SE_test.npy', X_new)
+#  np.save(f'{DATADIR}/X_LinRig_SE_avg_test.npy', X_new_avg)
 
 if VERBOSE:
     print("done.")

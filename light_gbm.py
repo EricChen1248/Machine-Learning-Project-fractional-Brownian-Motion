@@ -5,6 +5,7 @@ from joblib import dump, load
 SKIP = [False, False, False]
 TRAIN = True
 OBJECTIVE = 'mae'
+ADD = True
 
 x = np.load('./data/X_train.npy')
 alpha = np.load('./data/train_alpha.npy', mmap_mode='r+')
@@ -12,6 +13,11 @@ x = np.c_[x, alpha]
 test = np.load('./data/X_test.npy')
 alpha = np.load('./data/test_alpha.npy', mmap_mode='r+')
 test = np.c_[test, alpha]
+if ADD:
+    feature_SE = np.load('./data/X_LinRig_SE_train.npy',mmap_mode='r+')
+    x = np.c_[x,feature_SE]
+    feature_SE = np.load('./data/X_LinRig_SE_test.npy',mmap_mode='r+')
+    test = np.c_[test,feature_SE]
 submissions = []
 tsubmissions = []
 for feature in range(3):
@@ -26,7 +32,7 @@ for feature in range(3):
     params['num_leaves'] = 120
     params['min_data'] = 50
     params['max_depth'] = 20
-    params['num_threads'] = 28
+    params['num_threads'] = 16
     params['verbosity'] = 2
     params['two_round'] = True
     '''
@@ -47,7 +53,7 @@ for feature in range(3):
             clf = None
 
     if not SKIP[feature]:
-        clf = lgb.train(params, d_train, 2500)
+        clf = lgb.train(params, d_train, 500)
 
     ypred = clf.predict(x)
     submissions.append(ypred)
