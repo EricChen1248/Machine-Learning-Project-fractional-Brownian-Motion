@@ -1,0 +1,89 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage{cite}
+\usepackage{multicol, caption}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{subcaption}
+\usepackage{url}
+\newenvironment{Figure}
+  {\par\medskip\noindent\minipage{\linewidth}}
+  {\endminipage\par\medskip}
+
+%加這個就可以設定字體
+\usepackage{fontspec}
+%使用xeCJK，其他的還有CJK或是xCJK
+\usepackage{xeCJK}
+\usepackage[margin=0.6in]{geometry}
+
+%字型的設定可以使用系統內的字型，而不用像以前一樣另外安裝
+\setCJKmainfont{DFKai-SB}
+\author{}    
+\newcommand*{\citenumfont}{}
+
+% Reducing Distance of title and date
+\setlength{\droptitle}{-2cm}
+\title{\textbf{Fractional Brownian Motion}}
+\renewcommand\maketitlehookc{\vspace{-3.5em}}
+
+
+\begin{document}
+    \maketitle     
+    \begin{center}
+        \begin{tabular}{ccc}
+            陳君彥, b04703091 & 劉育嘉, b06902008 & 黃柏豪, b06902124 \\
+            b04703091@ntu.edu.tw &
+            b06902008@ntu.edu.tw &
+            b06902124@ntu.edu.tw
+        \end{tabular}
+    \end{center}
+
+    % \begin{figure}[h!]
+    %     \includegraphics[width=\linewidth]{images/outline.png}
+    %     \caption{Our tested methods and corresponding results.}
+    %     \label{outline}
+    % \end{figure}
+
+    \section*{Division of Work}
+        陳君彥, b04703091: 
+        \begin{itemize}
+            \item Data initial processing and calculation tool creation.
+            \item Initial creation and testing of XG-boost, LightGBM, and Random Forest Models
+        \end{itemize}
+        劉育嘉, b06902008:
+        \begin{itemize}
+            \item Indepth testing of tree based methods
+            \item Testing and Creation of select feature models.
+        \end{itemize}
+        黃柏豪, b06902124:
+        \begin{itemize}
+            \item Creation and testing of neural network based models.
+            \item Creation and testing of blending based models.
+        \end{itemize}
+
+    \begin{multicols}{2}
+        \section{Introduction}
+            The goal of this project is to reverse learn model parameters used to simulate a fractional Brownian Motion \cite{fBM} simulation.
+        \section{Features}
+            \subsection{Original Features}
+                Our training dataset consists of 47,500 simulations with 10,000 features each. The first 5,000 features represented the mean-square displacements (MSD) of our particles ordered from time = [1,5000]. The second 5,000 features were 50 sets of velocity auto-correlations (VAC) calculated in different methods, ordered by the early VAC being more representative of instataneous velocity, with later VAC being closer to average velocity. Each sets consists of 100 calculation using the respective VAC, with time intervals from t = [1,100].
+
+                Our testing sets consists of 2,500 simulations.
+            \subsubsection{Feature Importance}
+            \subsection{Additional Features}
+        \section{Individual Model Experiments}        
+            \subsection{Tree based models}
+                \subsubsection{Random Forest}
+                \subsubsection{XGBoost}
+                \subsubsection{LightGBM}
+            \subsection{Neural network models}
+            \subsection{Blending}
+        \section{Conclusion}
+
+  \end{multicols}
+
+\vskip 5cm
+\bibliography{report}{}
+\bibliographystyle{ieeetran}
+
+\end{document}

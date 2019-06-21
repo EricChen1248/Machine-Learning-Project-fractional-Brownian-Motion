@@ -125,3 +125,8 @@ dmypy.json
 .vscode
 /data/*
 .cache
+report\.bbl
+
+report\.aux
+
+report\.blg
