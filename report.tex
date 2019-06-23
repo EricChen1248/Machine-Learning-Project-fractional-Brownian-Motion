@@ -201,12 +201,12 @@
                     \begin{tabular}{@{}l@{}}+ filtered data \\ \&alpha feedback \end{tabular} & 48.86 & 0.66 \\
                         + auto tree method & 43.49 & 0.60 \\
                         + tweedie regularizer & 41.70 & 0.38 \\
-                        + boot round = 5 & 40.85 & 0.33 \\
+                        + boost round = 5 & 40.85 & 0.33 \\
                     \end{tabular}
                     \captionof{table}{Performance of xgboost with each additional parameter tuning.}
                     \label{xgboost}
                 \end{center}
-                    As seen in Table \ref{xgboost}, the xgboost relies heavily on custom tuned parameter, with the base parameters model performing really bad. However, with careful tuning, and the filtered data fed into our model, xgboost provided very respectable data on the validation set. After submitting the results, we found out that the final rounds of tuning had led to the model being overfitted, with the submission score actually being worse than the previous round. We thus stopped our experiments on xgboost here and moved on to a different model.
+                    As seen in table \ref{xgboost}, xgboost relies heavily on custom tuned parameter, with the untuned model performing much worse than others. After some tuning and using filtered data, our model provided a very respectable result on the validation set. After submitting the prediction, we found out that the final rounds of tuning had led to the model being slightly overfitted, with the submission score being worse than the previous round. We thus stopped our experiments on xgboost here and moved on to a different model.
                 \subsubsection{LightGBM}
                     LightGBM \cite{lightgbm} is a very new contender to the scene, with a focus on limiting leaf count rather than xgboost's method of limiting tree depth.
 
@@ -225,6 +225,8 @@
                         \label{lightgbmVal}
                     \end{center}
 
+                    We tried using the square error on linear regression as a feature, and averaging them out, cutting our feature set down to one tenth of the size, and as seen in Table \ref{lightgbmsquared}, shows that the overfitting issue has been somewhat allieviated.
+
                     \begin{center}
                         \begin{tabular}{l|cc}
                             Notes & Track 1 & Track 2\\
@@ -238,8 +240,6 @@
                         \label{lightgbmSub}
                     \end{center}
 
-                    We tried using the square error on linear regression as a feature, and averaging them out, cutting our feature set down to one tenth of the size, and as seen in Table \ref{lightgbmsquared}, shows that the overfitting issue has been somewhat allieviated.
-
                     \begin{center}
                         \begin{tabular}{l|cc}
                             Notes & Validation & Submission \\
@@ -247,21 +247,48 @@
                             500 iterations & 45.52 & 49.17 \\
                             1000 iterations & 43.27 & 48.13 \\
                         \end{tabular}
-                        \captionof{table}{Submission performance of lightgbm with each additional parameter tuning.}
+                        \captionof{table}{Submission performance of lightgbm with regularization.}
                         \label{lightgbmsquared}
                     \end{center}
-            \subsection{Neural network models}
-                We used a dense neural network of size 2048-50-1 to predict our three parameters. As the number of features is too big for a neural network, the features were first passed through an autoencoder of size 5000-2048-1024 and train with 'relu' activation on a 5000-2048-1024-2048-5000 model.
 
+            \subsection{Neural network models}
+                We used the neural network model found in keras \cite{keras} to predict our three parameters. As the number of features is too big for a neural network, the features were first passed through an autoencoder of size 5000-2048-1024 and train with 'linear' activation on a 5000-2048-512-64-32-1 model.
             \begin{lstlisting}
 def encoder(x, 
-    actvation_list = ['relu', 'relu'], 
-    layer_list = (2048, 1024),  # dimension for each layer
+    activation_list = ['relu', 'relu'], 
+    layer_list = (2048, 1024), # dimension for each layer
     name = 'temp', # to specify model file
     use_old = False): # load existing model or not
             \end{lstlisting}
 
+            However, our model (loss='mse', optimizer = 'adam', batch size = 64, epochs = 10), as shown in Table \ref{nnresult}, performed poorly alone.
+                
+            \begin{center}
+                \begin{tabular}{l|cc}
+                    Notes & Track 1 & Track 2 \\
+                    \hline
+                    In-Sample Error & 120.19 & 3.45 \\
+                    Out-of-Sample Error & 121.47 & 3.52 \\
+                \end{tabular}
+                \captionof{table}{Performance of the neural network model.}
+                \label{nnresult}
+            \end{center}
+            
+            We attempted to improve it by reducing the layer count, while changing the activation method to use 'relu' and arrived at the results shown in table \ref{nnrelu}. While not extremely good, we deemed it good enough to be used in our final method.
+
+            \begin{center}
+                \begin{tabular}{l|cc}
+                    Notes & Track 1 & Track 2 \\
+                    \hline
+                    In-Sample Error & 98.15 & 1.82 \\
+                    Out-of-Sample Error & 100.15 & 1.85 \\
+                \end{tabular}
+                \captionof{table}{Performance of the improved neural network model.}
+                \label{nnrelu}
+            \end{center}
+
             \subsection{Blending}
+
         \section{Conclusion}
 
   \end{multicols}
