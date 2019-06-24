@@ -274,7 +274,7 @@ def encoder(x,
                 \label{nnresult}
             \end{center}
             
-            We attempted to improve it by reducing the layer count, while changing the activation method to use 'relu' and arrived at the results shown in table \ref{nnrelu}. While not extremely good, we deemed it good enough to be used in our final method.
+            We attempted to improve it by reducing the layer count, while changing the activation method to use 'relu' and arrived at the results shown in table \ref{nnrelu}. While not the best, we deemed it good enough to be used in our final method.
 
             \begin{center}
                 \begin{tabular}{l|cc}
@@ -294,28 +294,36 @@ def encoder(x,
                     \begin{tabular}{l|cc}
                         Notes & Track 1 & Track 2 \\
                         \hline
-                        In-Sample Error & 35.45 & 0.33 \\
-                        Out-of-Sample Error & 44.68 & 0.45 \\
+                        In-Sample Error & 35.56 & 0.33 \\
+                        Out-of-Sample Error & 44.79 & 0.45 \\
                         Submission & 47.71 & 0.71
                     \end{tabular}
                     \captionof{table}{Performance of xgboost + NN}
                     \label{xgbnn}
                 \end{center}
 
-                We tried to replicate it further, using a uniform blending of our top three models, xgboost, NN + xgboost, and lightgbm, as shown in table \ref {uniform}
+                We tried to replicate it further, using a uniform blending of our top three models, xgboost, NN + xgboost, and lightgbm. As shown in table \ref {uniform}, the blending has made our model much more stable, providing better performance while being less overfitted than our previous model.
                 \begin{center}
                     \begin{tabular}{l|cc}
                         Notes & Track 1 & Track 2 \\
                         \hline
-                        Validation & 35.45 & 0.33 \\
+                        Validation & 39.63 & 0.42 \\
                         Submission & 46.87 & 0.65
                     \end{tabular}
                     \captionof{table}{Performance of Uniform Blending Model}
                     \label{uniform}
                 \end{center}
+            \end{multicols}
         \section{Conclusion}
+                In this paper, we tested a multitude of methods to predict the parameters used to generate a fractional Brownian Motion simulation. We used methods that reduced the feature set size of each entry, including feature importance as determined by preliminary models, as well as mathematical equations to reduce the dimensionality. This reduction allowed us to train the models much further than was previously feasible. We also generated our own features, using physical features like the MSE on linear regression or a feedback of our own predicted alpha. These features were ran through multiple different models that provided different insights.
+                
+                First, our pure Random Forest Models performed moderately, and showed a clear sign of the error trending downwards with each iteration. It's downfall is the massively long time it took to train each iteration, making it unfeasible for such a large dataset. 
+                
+                We took a look at improved tree models, such as the gradient boosted xgboost and lightgbm. These models showed the benefit of tree based models in being quite performant, while also being much faster to train than the random forest models. This allowed us to test many more parameters and feature inputs than before, giving us a better heading to work off of.
 
-  \end{multicols}
+                Next, we also tried neural network based models. Alone, our NN model performed moderately. The problem with neural network being that it is rather hard to improve iteratively. One set of parameters or settings may work better than another, but a combination of them may perform even worse than either. So we tried giving our neural network a jumpstart by also giving it the predicted results of our xgboost models as a starting point. This gave us a very good accuracy, and showed that there was more information that could be extracted from the xgboost. This model however, was also suspicious of being incredibly overfitting, with our high accuracy possibly due to luck.
+
+                Our final model is the uniform blending of the three models, NN + xgboost, xgboost, and lightgbm. This blending stabilized our results, leading to a lower validation accuracy, but a higher test accuracy.  We arrive at the conclusion that the blending of multiple successful models is one of the best way to achieve a good and stable way of creating a machine learning model.
 
 \vskip 5cm
 \bibliography{report}{}
