@@ -315,7 +315,9 @@ def encoder(x,
                 \end{center}
             \end{multicols}
         \section{Conclusion}
-                In this paper, we tested a multitude of methods to predict the parameters used to generate a fractional Brownian Motion simulation. We used methods that reduced the feature set size of each entry, including feature importance as determined by preliminary models, as well as mathematical equations to reduce the dimensionality. This reduction allowed us to train the models much further than was previously feasible. We also generated our own features, using physical features like the MSE on linear regression or a feedback of our own predicted alpha. These features were ran through multiple different models that provided different insights.
+                In this paper, we tested a multitude of methods to predict the parameters used to generate a fractional Brownian Motion simulation. While our testing used two methods of evaluation, we noticed that none of our models performed exceptionally well with either evaluation methods. Based on the final competition entry, our submissions on both track achieved the same rank, and we determine that our models were not specific to either evaluation method.s
+                
+                We used methods that reduced the feature set size of each entry, including feature importance as determined by preliminary models, as well as mathematical equations to reduce the dimensionality. This reduction allowed us to train the models much further than was previously feasible. We also generated our own features, using physical features like the MSE on linear regression or a feedback of our own predicted alpha. These features were ran through multiple different models that provided different insights.
                 
                 First, our pure Random Forest Models performed moderately, and showed a clear sign of the error trending downwards with each iteration. It's downfall is the massively long time it took to train each iteration, making it unfeasible for such a large dataset. 
                 
