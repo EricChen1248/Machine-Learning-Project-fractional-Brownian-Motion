@@ -101,7 +101,7 @@
         Our testing sets consists of 2,500 simulations, half of which is tested in the public score, and half hidden in the private score.
 
             \subsubsection{Feature Importance}
-                In the interest of reducing the time need to train our models, we took a look at the feature importance determined by our earlier models and selected those that had importance higher than a given threshold. Through several rounds of testing, we found $10^{-4}$ to perform the best. This allowed us to greatly increase the training iteration count and deepen our original model, giving us increased accuracy with much lower training times.
+                In the interest of reducing the time need to train our models, we took a look at the feature importance determined by our earlier models and selected those that had an importance higher than a given threshold. Through several rounds of testing, we found $10^{-4}$ to perform the best. This allowed us to greatly increase the training iteration count and deepen our original model, while giving us increased accuracy with much lower training times.
                 
                 Something of particular to note is the high reliance of a select few features for each parameter. Due to the lack of professional knowledge in this field and the lack of raw data, we could do little to take advantage of this except to reduce the dimensionality. However we expect that further studies can be improve by generating more features that are centered around these specific features.
 
@@ -111,7 +111,7 @@
                 \begin{Figure}
                     \centering
                     \includegraphics[width=\linewidth]{images/importance_1.png}
-                    \captionof{figure}{Feature importance of alpha.}
+                    \captionof{figure}{Feature importance of penetration rate.}
                     \label{alphafeat}
                 \end{Figure}
                 \begin{Figure}
@@ -123,7 +123,7 @@
                 \begin{Figure}
                     \centering
                     \includegraphics[width=\linewidth]{images/importance_3.png}
-                    \captionof{figure}{Feature importance of penetration rate.}
+                    \captionof{figure}{Feature importance of alpha.}
                     \label{penfeat}
                 \end{Figure}
 
@@ -142,7 +142,7 @@
                 We used the models provided in the python package Sci-kit Learn \cite{scikit-learn} for our random forest, with bootstrap enable, estimator count of 50, and a max depth of 9. The following shows the results of our experiments.
                 \begin{center}
                     \begin{tabular}{c|ccc}
-                        Tree count & Alpha & Mesh Size & Penetration\\
+                        Tree count & Penetration & Mesh Size & Alpha\\
                         \hline
                         50 & 65.72 & 31.92 & 1.96 \\
                         100 & 64.74 & 30.69 & 1.81 \\
@@ -151,7 +151,7 @@
                         500 & 58.67 & 25.10 & 1.40 \\
                         1250 & 55.07 & 22.40 & 1.23
                     \end{tabular}
-                    \captionof{table}{Performance on track 1 for random forest}
+                    \captionof{table}{Performance on track 1 for random forest (Validation)}
                     \label{randForTab}
                 \end{center}
 
@@ -167,7 +167,7 @@
                         200 & 67.35 & 30.65 & 3.11 \\
                         300 & 67.35 & 30.64 & 3.11 \\
                     \end{tabular}
-                    \captionof{table}{Performance on track 1 for random forest with reduced input.}
+                    \captionof{table}{Performance on track 1 for random forest with reduced input. (Validation)}
                     \label{randForRedTab}
                 \end{center}
 
@@ -183,7 +183,7 @@
                         200 & 64.56 & 23.86 & 2.36 \\
                         300 & 64.60 & 23.85 & 2.35 \\
                     \end{tabular}
-                    \captionof{table}{Performance on track 1 for random forest with averaged features.}
+                    \captionof{table}{Performance on track 1 for random forest with averaged features. (Validation)}
                     \label{randForAvgTab}
                 \end{center}
 
@@ -198,12 +198,12 @@
                         Notes & Track 1 & Track 2\\
                         \hline
                         base & 137.23 & 6.22 \\
-                    \begin{tabular}{@{}l@{}}+ filtered data \\ \&alpha feedback \end{tabular} & 48.86 & 0.66 \\
+                    \begin{tabular}{@{}l@{}}+ filtered data \\ \& alpha feedback \end{tabular} & 48.86 & 0.66 \\
                         + auto tree method & 43.49 & 0.60 \\
                         + tweedie regularizer & 41.70 & 0.38 \\
                         + boost round = 5 & 40.85 & 0.33 \\
                     \end{tabular}
-                    \captionof{table}{Performance of xgboost with each additional parameter tuning.}
+                    \captionof{table}{Performance of xgboost with each additional parameter tuning (Validation).}
                     \label{xgboost}
                 \end{center}
                     As seen in table \ref{xgboost}, xgboost relies heavily on custom tuned parameter, with the untuned model performing much worse than others. After some tuning and using filtered data, our model provided a very respectable result on the validation set. After submitting the prediction, we found out that the final rounds of tuning had led to the model being slightly overfitted, with the submission score being worse than the previous round. We thus stopped our experiments on xgboost here and moved on to a different model.
@@ -288,7 +288,31 @@ def encoder(x,
             \end{center}
 
             \subsection{Blending}
+                Our last methods involved the blending of our previously successful models. The first one we tried as the mixing of xgboost into our neural network. We already showed that xgboost provides a very good performance that can be extended upon. We used the autoencoded features as our inputs with weights initialized to 0, and xgboost predictions as a second input with weights initialized to 1, and the same layers as used before. As shown in table \ref{xgbnn}, this is our best results so far, though we suspect it may be somewhat a lucky guess due to the slight overfitting that occurs.
 
+                \begin{center}
+                    \begin{tabular}{l|cc}
+                        Notes & Track 1 & Track 2 \\
+                        \hline
+                        In-Sample Error & 35.45 & 0.33 \\
+                        Out-of-Sample Error & 44.68 & 0.45 \\
+                        Submission & 47.71 & 0.71
+                    \end{tabular}
+                    \captionof{table}{Performance of xgboost + NN}
+                    \label{xgbnn}
+                \end{center}
+
+                We tried to replicate it further, using a uniform blending of our top three models, xgboost, NN + xgboost, and lightgbm, as shown in table \ref {uniform}
+                \begin{center}
+                    \begin{tabular}{l|cc}
+                        Notes & Track 1 & Track 2 \\
+                        \hline
+                        Validation & 35.45 & 0.33 \\
+                        Submission & 46.87 & 0.65
+                    \end{tabular}
+                    \captionof{table}{Performance of Uniform Blending Model}
+                    \label{uniform}
+                \end{center}
         \section{Conclusion}
 
   \end{multicols}
